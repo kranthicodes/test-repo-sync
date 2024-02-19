@@ -1,0 +1,27 @@
+name: Protocol Land to GitHub Sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      forcePush:
+        description: "Force push"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Sync repo to GitHub
+        run: npx protocol-land-sync-github
+        env:
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN || secrets.GITHUB_TOKEN }}
+          WALLET: ${{ secrets.WALLET }}
+          PL_REPO_ID: ${{ secrets.PL_REPO_ID }}
+          FORCE_PUSH: ${{ inputs.forcePush }}
+          GH_REPO_NAME: ${{ github.repository }}
